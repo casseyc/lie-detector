@@ -1,0 +1,69 @@
+int redPin = 9; 
+int greenPin = 10; 
+int bluePin = 11; 
+int buzzerPin = 7;
+int potPin = 1; 
+int timerButton = 5;
+int interruptButton = 2;
+int sensorPin = 0;
+long red = 0xFF0000; 
+long green = 0x00FF00; 
+long blue = 0x000080;
+int band = 10;
+// adjust for sensitivity
+
+void setup() {
+    pinMode(potPin, INPUT); 
+    pinMode(sensorPin, INPUT); 
+    pinMode(timerButton, INPUT);
+    pinMode(interruptButton, INPUT);
+    pinMode(redPin, OUTPUT); 
+    pinMode(greenPin, OUTPUT);
+    pinMode(bluePin, OUTPUT); 
+    pinMode(buzzerPin, OUTPUT);
+}
+
+void loop() 
+{
+    int gsr = analogRead(sensorPin); 
+    int pot = analogRead(potPin); 
+    
+    if (gsr > pot + band) {
+      //setColor(red);
+      digitalWrite(redPin, HIGH);
+      digitalWrite(greenPin, LOW);
+      digitalWrite(bluePin, LOW);
+      beep(); 
+    }
+    else if (gsr < pot - band) {
+       //setColor(blue);
+       digitalWrite(bluePin, HIGH);
+       digitalWrite(greenPin, LOW);
+       digitalWrite(redPin, LOW);
+    }
+    else {
+       //setColor(green);
+       digitalWrite(greenPin, HIGH);
+       digitalWrite(bluePin, LOW);
+       digitalWrite(redPin, LOW);
+    }
+}
+
+void setColor(long rgb) {
+    int red = rgb >> 16;
+    int green = (rgb >> 8) & 0xFF;
+    int blue = rgb & 0xFF; 
+    analogWrite(redPin, 255 - red); 
+    analogWrite(greenPin, 255 - green); 
+    analogWrite(bluePin, 255 - blue);
+}
+
+void beep() {
+    // 5 Khz for 1/5th second
+    for (int i = 0; i < 1000; i++) {
+        digitalWrite(buzzerPin, HIGH); 
+        delayMicroseconds(100); 
+        digitalWrite(buzzerPin, LOW); 
+        delayMicroseconds(100);
+    } 
+}
